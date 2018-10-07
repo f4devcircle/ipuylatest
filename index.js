@@ -1,7 +1,9 @@
 const line = require('@line/bot-sdk')
 const app = require('express')()
 const PORT = process.env.PORT || 5000
+const getLatestIpuy = require('./helpers/getLatestIpuy')
 
+require('dotenv').config()
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   channelSecret: process.env.CHANNEL_SECRET
@@ -9,7 +11,15 @@ const config = {
 const client = new line.Client(config)
 
 app.get('/', (req, res) => {
-  res.send({ message: 'hello world' })
+  getLatestIpuy()
+  .then(({data}) => {
+    const shortcode = data.graphql.hashtag.edge_hashtag_to_top_posts.edges[0].node.shortcode
+    const thumb = data.graphql.hashtag.edge_hashtag_to_top_posts.edges[0].node.thumbnail_src
+    // console.log('---this is data', data)
+    // console.log('---data', data.graphql.hashtag.edge_hashtag_to_media.edges[0])
+    // console.log(shortcode, thumb)
+    res.send({ shortcode, thumb })
+  })
 })
 
 app.post('/callback', line.middleware(config), (req, res) => {
@@ -32,11 +42,25 @@ const handleEvent = (event) => {
     type: 'text',
     text: event.message.text
   }
-  if(event.message.text == '/yupi') {
-    echo.text = 'ipuy'
-  }
 
-  return client.replyMessage(event.replyToken, echo)
+  if(event.message.text == '/yupi') {
+    getLatestIpuy()
+      .then(({ data }) => {
+        const shortcode = data.graphql.hashtag.edge_hashtag_to_top_posts.edges[0].node.shortcode
+        const thumb = data.graphql.hashtag.edge_hashtag_to_top_posts.edges[0].node.thumbnail_src
+        echo.text = 'ipuy latest!!'
+        echo.originalContentUrl = shortcode
+        echo.previewImageUrl = shortcode
+        echo.animated = false
+        return client.replyMessage(event.replyToken, echo)
+      })
+      .catch(err => {
+        echo.text = 'sorry cant handle this :('
+        return client.replyMessage(event.replyToken, echo)
+      })
+  } else {
+    return client.replyMessage(event.replyToken, echo)
+  }
 }
 
 app.listen(PORT, () => console.log(`listening ${PORT}`))
