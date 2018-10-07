@@ -4,7 +4,7 @@ instagram API refference from this post: https://medium.com/@h4t0n/instagram-dat
 
 
 endpoint | method | return
-- | - | -
+-|-|-
 / | GET | { msg: 'greetings!!' }
 /callback | POST | line callback bot
 
