@@ -49,6 +49,7 @@ const handleEvent = (event) => {
         const shortcode = data.graphql.hashtag.edge_hashtag_to_top_posts.edges[0].node.shortcode
         const thumb = data.graphql.hashtag.edge_hashtag_to_top_posts.edges[0].node.thumbnail_src
         echo.text = 'ipuy latest!!'
+        echo.type = 'image'
         echo.originalContentUrl = shortcode
         echo.previewImageUrl = shortcode
         echo.animated = false
