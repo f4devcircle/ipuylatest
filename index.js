@@ -50,13 +50,9 @@ const handleEvent = (event) => {
         const thumb = data.graphql.hashtag.edge_hashtag_to_top_posts.edges[0].node.thumbnail_src
         echo.text = 'ipuy latest!!'
         echo.type = 'image'
-        echo.originalContentUrl = shortcode
-        echo.previewImageUrl = shortcode
+        echo.originalContentUrl = thumb
+        echo.previewImageUrl = thumb
         echo.animated = false
-        return client.replyMessage(event.replyToken, echo)
-      })
-      .catch(err => {
-        echo.text = 'sorry cant handle this :('
         return client.replyMessage(event.replyToken, echo)
       })
   } else {
