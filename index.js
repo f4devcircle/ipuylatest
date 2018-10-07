@@ -14,9 +14,10 @@ app.get('/', (req, res) => {
 })
 
 app.post('/callback', line.middleware(config), (req, res) => {
+  console.log(req.body)
   Promise.all(req.body.events.map(handleEvent))
          .then(result => {
-           res.json(result)
+           res.status(200).send(result)
          })
          .catch(err => {
            console.log(err)
