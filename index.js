@@ -11,15 +11,7 @@ const config = {
 const client = new line.Client(config)
 
 app.get('/', (req, res) => {
-  getLatestIpuy()
-  .then(({data}) => {
-    const shortcode = data.graphql.hashtag.edge_hashtag_to_top_posts.edges[0].node.shortcode
-    const thumb = data.graphql.hashtag.edge_hashtag_to_top_posts.edges[0].node.thumbnail_src
-    // console.log('---this is data', data)
-    // console.log('---data', data.graphql.hashtag.edge_hashtag_to_media.edges[0])
-    // console.log(shortcode, thumb)
-    res.send({ shortcode, thumb })
-  })
+  res.send({msg: 'greetings!!'})
 })
 
 app.post('/callback', line.middleware(config), (req, res) => {
@@ -34,7 +26,6 @@ app.post('/callback', line.middleware(config), (req, res) => {
 })
 
 const handleEvent = (event) => {
-  console.log('--event:', event)
   if (event.type !== 'message' || event.message.type !== 'text') {
     return Promise.resolve(null)
   }
