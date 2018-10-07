@@ -2,7 +2,6 @@ const line = require('@line/bot-sdk')
 const app = require('express')()
 const PORT = process.env.PORT || 5000
 
-require('dotenv').config()
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   channelSecret: process.env.CHANNEL_SECRET
@@ -14,13 +13,13 @@ app.get('/', (req, res) => {
 })
 
 app.post('/callback', line.middleware(config), (req, res) => {
-  console.log(req.body)
+  console.log('-----body',req.body)
   Promise.all(req.body.events.map(handleEvent))
          .then(result => {
            res.status(200).send(result)
          })
          .catch(err => {
-           console.log(err)
+           console.log('error:', err)
            res.status(500).end()
          })
 })
