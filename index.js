@@ -24,12 +24,16 @@ app.post('/callback', line.middleware(config), (req, res) => {
 })
 
 const handleEvent = (event) => {
+  console.log('--event:', event)
   if (event.type !== 'message' || event.message.type !== 'text') {
     return Promise.resolve(null)
   }
-  const echo = {
+  let echo = {
     type: 'text',
     text: event.message.text
+  }
+  if(event.message.text == '/yupi') {
+    echo.text = 'ipuy'
   }
 
   return client.replyMessage(event.replyToken, echo)
